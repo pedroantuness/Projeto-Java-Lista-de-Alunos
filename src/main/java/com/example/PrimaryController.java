@@ -1,13 +1,15 @@
 package com.example;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 
 public class PrimaryController {
 
@@ -16,6 +18,10 @@ public class PrimaryController {
     ListView<Aluno> lstAlunos;
     @FXML
     TextField txtNome;
+    @FXML
+    TextField txtTurma;
+    @FXML
+    TextField txtRm;
     @FXML
     RadioButton rdbCrescente;
     @FXML
@@ -28,20 +34,79 @@ public class PrimaryController {
 
     // Metodos
     public void adicionarAluno() {
-        var aluno = new Aluno(txtNome.getText(), "1TDSPG", 200399);
+        var aluno = new Aluno(txtNome.getText(), txtTurma.getText(), Integer.valueOf(txtRm.getText()));
         alunos.add(aluno);
+
+        //Conectar com o banco
+        final String HOST = "auth-db719.hstgr.io";
+        final String PORT = "3306";
+        final String DATABASE = "u553405907_fiap";
+        final String USER = "u553405907_fiap";
+        final String PASS = "u553405907_FIAP";
+        final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE; // JDBC URL
+        // jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL -- Endereço oracle fiap
+
+        try {
+            var connection = DriverManager.getConnection(URL, USER, PASS);
+            //statement
+            // var instrucao = connection.createStatement();
+            // var sql = "INSERT INTO alunos (nome, turma, rm) VALUES ('"+ aluno.nome() + "', '"+ aluno.turma() +"', "+ aluno.rm() +" )";
+            // instrucao.execute(sql);
+
+            // prepare statement
+            var sql = "INSERT INTO alunos (nome, turma, rm) VALUES (?, ?, ?)";
+            var instrucao = connection.prepareStatement(sql);
+            instrucao.setString(1, aluno.nome());
+            instrucao.setString(2, aluno.turma());
+            instrucao.setInt(3, aluno.rm());
+
+            //Executar o insert   
+            instrucao.executeUpdate();
+
+            Alert alert = new Alert(AlertType.INFORMATION, "Cadastrado com sucesso");
+            alert.show();
+
+            //Desconectar desse banco
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         // alunos.add(txtNome.getText());
         txtNome.clear();
+        txtTurma.clear();
+        txtRm.clear();
         mostrarAluno();
     }
 
     public void mostrarAluno() {
-        ordenar();
+        //Conectar com o banco
+        final String HOST = "auth-db719.hstgr.io";
+        final String PORT = "3306";
+        final String DATABASE = "u553405907_fiap";
+        final String USER = "u553405907_fiap";
+        final String PASS = "u553405907_FIAP";
+        final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE;
 
-        lstAlunos.getItems().clear();
+        try {
+            var connection = DriverManager.getConnection(URL, USER, PASS);
 
-        for (var aluno : alunos) {
-            lstAlunos.getItems().add(aluno);
+            var sql = "SELECT * FROM alunos ORDER BY nome";
+            var intrucao = connection.prepareStatement(sql);
+            var dados = intrucao.executeQuery();
+
+            while(dados.next()){
+                var aluno = new Aluno(
+                    dados.getString("nome"),
+                    dados.getString("turma"),
+                    dados.getInt("rm")
+                );
+
+                lstAlunos.getItems().add(aluno);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
