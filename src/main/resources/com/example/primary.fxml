@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="360.0" prefWidth="432.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.PrimaryController">
+<VBox alignment="CENTER" prefHeight="360.0" prefWidth="432.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.PrimaryController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -25,17 +25,18 @@
          <children>
             <Button mnemonicParsing="false" onAction="#adicionarAluno" text="Adicionar" />
             <Button mnemonicParsing="false" onAction="#apagarAluno" text="Apagar" />
+            <Button mnemonicParsing="false" onAction="#atualizarAluno" text="Atualizar" />
          </children>
       </HBox>
       <ListView fx:id="lstAlunos" prefHeight="200.0" prefWidth="200.0" />
       <HBox alignment="CENTER" prefHeight="38.0" prefWidth="262.0" spacing="10.0">
          <children>
-            <RadioButton fx:id="rdbCrescente" mnemonicParsing="false" onAction="#mostrarAluno" selected="true" text="Ordem Crescente">
+            <RadioButton fx:id="rdbCrescente" mnemonicParsing="false" onAction="#atualizarAluno" selected="true" text="Ordem Crescente">
                <toggleGroup>
                   <ToggleGroup fx:id="ordem" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="rdbDecrescente" mnemonicParsing="false" onAction="#mostrarAluno" text="Oredem Decrescente" toggleGroup="$ordem" />
+            <RadioButton fx:id="rdbDecrescente" mnemonicParsing="false" onAction="#atualizarAluno" text="Oredem Decrescente" toggleGroup="$ordem" />
          </children>
       </HBox>
    </children>
